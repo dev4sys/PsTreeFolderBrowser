@@ -1,10 +1,3 @@
-
-
-#########################################################################
-# Author:  Kevin RAHETILAHY                                             #   
-# Blog: dev4sys.blogspot.fr                                             #
-#########################################################################
-
 #########################################################################
 #                        Add shared_assemblies                          #
 #########################################################################
@@ -12,6 +5,7 @@
 [System.Reflection.Assembly]::LoadWithPartialName('presentationframework') | out-null
 [System.Reflection.Assembly]::LoadFrom('assembly\System.Windows.Interactivity.dll') | out-null
 [System.Reflection.Assembly]::LoadFrom('assembly\MahApps.Metro.dll')      | out-null  
+[System.Reflection.Assembly]::LoadFrom('assembly\dev4sys.Tree.dll')      | out-null 
 
 #########################################################################
 #                        Load Main Panel                                #
@@ -44,16 +38,29 @@ $dummyNode = $null
 $AllFiles  = [IO.Directory]::GetFiles('.\Test')
 $AllDirectory = [IO.Directory]::GetDirectories('.\Test')
 
+
+
+# ================== Handle Folders ===========================
 foreach ($folder in $AllDirectory){
 
     $treeViewItem = [Windows.Controls.TreeViewItem]::new()
     $treeViewItem.Header = $folder.Substring($folder.LastIndexOf("\") + 1)
-    $treeViewItem.Tag = $folder
+    $treeViewItem.Tag = @("folder",$folder)
     $treeViewItem.Items.Add($dummyNode) | Out-Null
     $treeViewItem.Add_Expanded({
-        Write-Host $_.OriginalSource.Header  " 0 is expanded"
+        Write-Host $_.OriginalSource.Header  " is expanded"
         TreeExpanded($_.OriginalSource)
     })
+    $FolderTree.Items.Add($treeViewItem)| Out-Null
+
+}
+
+# ================== Handle Files ===========================
+foreach ($file in $AllFiles){
+
+    $treeViewItem = [Windows.Controls.TreeViewItem]::new()
+    $treeViewItem.Header = $file.Substring($file.LastIndexOf("\") + 1)
+    $treeViewItem.Tag = @("file",$file) 
     $FolderTree.Items.Add($treeViewItem)| Out-Null
 
 }
@@ -69,17 +76,26 @@ Function TreeExpanded($sender){
         Try
         {
             
-            foreach ($string in [IO.Directory]::GetDirectories($item.Tag.ToString()))
+            foreach ($string in [IO.Directory]::GetDirectories($item.Tag[1].ToString()))
             {
                 $subitem = [Windows.Controls.TreeViewItem]::new();
                 $subitem.Header = $string.Substring($string.LastIndexOf("\") + 1)
-                $subitem.Tag = $string
+                $subitem.Tag = @("folder",$string)
                 $subitem.Items.Add($dummyNode)
                 $subitem.Add_Expanded({
                     TreeExpanded($_.OriginalSource)
                 })
                 $item.Items.Add($subitem) | Out-Null
             }
+
+            foreach ($file in [IO.Directory]::GetFiles($item.Tag[1].ToString())){
+                $subitem = [Windows.Controls.TreeViewItem]::new()
+                $subitem.Header = $file.Substring($file.LastIndexOf("\") + 1)
+                $subitem.Tag = @("file",$file) 
+                $item.Items.Add($subitem)| Out-Null
+
+            }
+
         }   
         Catch [Exception] { }
     }

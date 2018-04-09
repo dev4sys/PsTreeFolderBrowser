@@ -4,6 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Name="MainPanel" WindowStyle="None"
 		Width="600" Height="400" ResizeMode="NoResize" 
+		xmlns:sys="clr-namespace:dev4sys.Tree;assembly=dev4sys.Tree" 
 		WindowStartupLocation="CenterScreen" Topmost="True">  
 
 	<Window.Resources>
@@ -20,7 +21,7 @@
 	
 	<Grid>
 
-        <StackPanel x:Name="StackElements" Orientation="Horizontal" HorizontalAlignment="Center">
+        <StackPanel x:Name="StackElements" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
 
 		<TreeView x:Name="TreeView" Width="200">
 
@@ -28,17 +29,26 @@
 				<Style TargetType="{x:Type TreeViewItem}">
 					<Setter Property="HeaderTemplate">
 						<Setter.Value>
-							<DataTemplate>
-								<StackPanel Orientation="Horizontal">
-									<Image Name="img" Width="30" Height="30"
-										   Stretch="Fill" Source=".\images\folder.png"/>
-									<TextBlock Text="{Binding}" Margin="10,5"/>
-								</StackPanel>
-							</DataTemplate>
+							<HierarchicalDataTemplate  >
+									<StackPanel Orientation="Horizontal">
+									<Image Name="img"  Width="20" Height="20" Stretch="Fill"  
+                                       Source= "{Binding 
+                                       RelativeSource={RelativeSource 
+                                       Mode=FindAncestor, 
+                                       AncestorType={x:Type TreeViewItem}}, 
+                                       Path=Tag, 
+                                       Converter={sys:HeaderToImageConverter}}"      
+                                       /> 
+                                    <TextBlock Text="{Binding}" 
+									   Margin="5,0" />
+                                </StackPanel>
+							</HierarchicalDataTemplate >
 						</Setter.Value>
 					</Setter>
 				</Style>
-			</TreeView.Resources>
+			</TreeView.Resources> 
+			
+			
 			
 		</TreeView>
 		   
