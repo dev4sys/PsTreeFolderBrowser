@@ -37,7 +37,7 @@
                                        Mode=FindAncestor, 
                                        AncestorType={x:Type TreeViewItem}}, 
                                        Path=Tag, 
-                                       Converter={sys:HeaderToImageConverter}}"      
+                                       Converter={sys:ObjectTagToImageConverter}}"      
                                        /> 
                                     <TextBlock Text="{Binding}" 
 									   Margin="5,0" />
