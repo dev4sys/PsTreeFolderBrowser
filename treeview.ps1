@@ -63,6 +63,18 @@ foreach ($file in $AllFiles){
     $treeViewItem.Tag = @("file",$file) 
     $FolderTree.Items.Add($treeViewItem)| Out-Null
 
+	$treeViewItem.Add_PreviewMouseLeftButtonDown({
+		[System.Windows.Controls.TreeViewItem]$sender = $args[0]
+		[System.Windows.RoutedEventArgs]$e = $args[1]
+		Write-Host "Left Click: $($sender.Tag)"
+	})
+
+	$treeViewItem.Add_PreviewMouseRightButtonDown({
+		[System.Windows.Controls.TreeViewItem]$sender = $args[0]
+		[System.Windows.RoutedEventArgs]$e = $args[1]
+		Write-Host "Right Click: $($sender.Tag)"
+	})
+
 }
 
 
@@ -93,6 +105,18 @@ Function TreeExpanded($sender){
                 $subitem.Header = $file.Substring($file.LastIndexOf("\") + 1)
                 $subitem.Tag = @("file",$file) 
                 $item.Items.Add($subitem)| Out-Null
+
+                $subitem.Add_PreviewMouseLeftButtonDown({
+		            [System.Windows.Controls.TreeViewItem]$sender = $args[0]
+		            [System.Windows.RoutedEventArgs]$e = $args[1]
+		            Write-Host "Left Click: $($sender.Tag)"
+	            })
+
+	            $subitem.Add_PreviewMouseRightButtonDown({
+		            [System.Windows.Controls.TreeViewItem]$sender = $args[0]
+		            [System.Windows.RoutedEventArgs]$e = $args[1]
+		            Write-Host "Right Click: $($sender.Tag)"
+	            })
 
             }
 
